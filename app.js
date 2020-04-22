@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-mongoose.connect('mongodb://localhost/ProjektoDB',
+mongoose.connect('mongodb+srv://Projektas:123@projektas-ebzvm.mongodb.net/test',
 {useNewUrlParser: true, useUnifiedTopology: true});
 
 mongoose.connection.once('open', () => console.log('MongoDB connected successfully'));
