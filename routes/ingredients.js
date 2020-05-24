@@ -50,7 +50,13 @@ router.patch('/:ingredientId', async (req, res) => {
   try {
     const updateIngredient = await Ingredient.updateOne(
       { _id: req.params.ingredientId },
-      { $set: { title: req.body.title } }
+      {
+        $set: {
+          title: req.body.title,
+          description: req.body.description,
+          calories: req.body.calories,
+        },
+      }
     );
     res.json(updateIngredient);
   } catch (err) {

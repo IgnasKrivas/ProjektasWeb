@@ -50,8 +50,15 @@ router.delete('/:recipeId', async (req, res) => {
 router.patch('/:recipeId', async (req, res) => {
   try {
     const updateRecipe = await Recipe.updateOne(
-      { _id: req.params.ingredientId },
-      { $set: { title: req.body.title } }
+      { _id: req.params.recipeId },
+      {
+        $set: {
+          title: req.body.title,
+          description: req.body.description,
+          calories: req.body.calories,
+          ingredients: req.body.ingredients,
+        },
+      }
     );
     res.json(updateRecipe);
   } catch (err) {
