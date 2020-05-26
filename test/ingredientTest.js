@@ -21,16 +21,6 @@ describe('Ingridientu route testavimas', () => {
       expect(res.body[0]).to.have.property('calories');
     }
   });
-
-  it('Tikriniame ar GET requestas pateikiant id grazina viena ingredienta teisingai', async () => {
-    const res = await request(url).get('/ingredients/5e9c8b1070fb5e022601e411');
-    expect(res.status).to.equal(200);
-    expect(res.body).to.have.property('_id');
-    expect(res.body).to.have.property('title');
-    expect(res.body).to.have.property('description');
-    expect(res.body).to.have.property('calories');
-  });
-
   it('Tikriname ar POST requestas prideda nauja ingredienta teisingai', async () => {
     const ingredient = new Ingredient({
       title: 'saldainiukas',
@@ -42,6 +32,23 @@ describe('Ingridientu route testavimas', () => {
     //  console.log(res.body);
     expect(res.status).to.be.equal(200);
     expect(res.body).to.be.not.empty;
+  });
+
+  it('Tikriniame ar GET requestas pateikiant id grazina viena ingredienta teisingai', async () => {
+    const ingredient = new Ingredient({
+      title: 'saldainiukas',
+      description: 'labai skanus',
+      calories: 50,
+    });
+
+    const resPost = await request(url).post('/ingredients').send(ingredient);
+
+    const res = await request(url).get('/ingredients/' + resPost.body._id);
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('title');
+    expect(res.body).to.have.property('description');
+    expect(res.body).to.have.property('calories');
   });
 
   it('Tikriname ar DELETE requestas istrina musu pasirinkta ingredienta teisingai', async () => {
@@ -76,5 +83,9 @@ describe('Ingridientu route testavimas', () => {
     //  console.log(res.body);
     expect(res.status).to.be.equal(200);
     expect(res.body.ok).to.be.equal(1);
+  });
+
+  it('Tikriname ar istrina visus ingredientus', async () => {
+    const res = await Ingredient.deleteMany();
   });
 });

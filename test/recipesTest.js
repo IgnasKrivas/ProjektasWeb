@@ -23,18 +23,6 @@ describe('Receptu route testavimas', () => {
       expect(res.body[0].ingredients).to.be.an('array');
     }
   });
-
-  it('Tikriniame ar GET requestas pateikiant id grazina viena recepta teisingai', async () => {
-    const res = await request(url).get('/recipes/5eb931e143d1180119fe25df');
-    expect(res.status).to.equal(200);
-    expect(res.body).to.have.property('_id');
-    expect(res.body).to.have.property('title');
-    expect(res.body).to.have.property('description');
-    expect(res.body).to.have.property('calories');
-    expect(res.body).to.have.property('ingredients');
-    expect(res.body.ingredients).to.be.an('array');
-  });
-
   it('Tikriname ar POST requestas prideda nauja recepta teisingai', async () => {
     const recipe = new Recipe({
       title: 'Malteasers',
@@ -47,6 +35,26 @@ describe('Receptu route testavimas', () => {
     //  console.log(res.body);
     expect(res.status).to.be.equal(200);
     expect(res.body).to.be.not.empty;
+  });
+
+  it('Tikriniame ar GET requestas pateikiant id grazina viena recepta teisingai', async () => {
+    const recipe = new Recipe({
+      title: 'Malteasers',
+      description: 'labai skanus saldainiai',
+      calories: 500,
+      ingredients: [],
+    });
+
+    const resPost = await request(url).post('/recipes').send(recipe);
+
+    const res = await request(url).get('/recipes/' + resPost.body._id);
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property('_id');
+    expect(res.body).to.have.property('title');
+    expect(res.body).to.have.property('description');
+    expect(res.body).to.have.property('calories');
+    expect(res.body).to.have.property('ingredients');
+    expect(res.body.ingredients).to.be.an('array');
   });
 
   it('Tikriname ar DELETE requestas istrina musu pasirinkta recepta teisingai', async () => {
@@ -83,5 +91,9 @@ describe('Receptu route testavimas', () => {
     //  console.log(res.body);
     expect(res.status).to.be.equal(200);
     expect(res.body.ok).to.be.equal(1);
+  });
+
+  it('Tikriname ar istrina visus receptus', async () => {
+    const res = await Recipe.deleteMany();
   });
 });
