@@ -5,6 +5,29 @@ const router = express.Router();
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Create new User
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       decription: "User object with passwordCheck"
+ *       schema:
+ *         $ref: '#/definitions/User'
+ *     responses:
+ *       '200':
+ *         description: An array of recipe objects
+ *       '400':
+ *         description: Something went wrong, will show error message that explains that went wrong
+ */
 router.post('/register', async (req, res) => {
   try {
     let { email, password, passwordCheck, displayName } = req.body;
@@ -55,6 +78,37 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Login to the user
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       decription: "Object with email and password"
+ *       schema:
+ *        type: object
+ *        properties:
+ *          email:
+ *            type: string
+ *            format: email
+ *            example: mantas.dranseika@gmail.com
+ *          password:
+ *            type: string
+ *            example: labas
+ *     responses:
+ *       '200':
+ *         description: An array of recipe objects
+ *       '400':
+ *         description: Something went wrong, will show error message that explains that went wrong
+ */
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -91,6 +145,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /delete:
+ *   delete:
+ *     tags:
+ *       - Users
+ *     summary: Delete user
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - in: "header"
+ *       name: "x-auth-token"
+ *       decription: "User token"
+ *       schema:
+ *        type: string
+ *       required: true
+ *     responses:
+ *       '200':
+ *         description: Shows deleted user object
+ */
 router.delete('/delete', auth, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.user);
@@ -104,6 +180,28 @@ router.delete('/delete', auth, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /tokenIsValid:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Checks whether provided token is valid
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - in: "header"
+ *       name: "x-auth-token"
+ *       decription: "User token"
+ *       schema:
+ *        type: string
+ *       required: true
+ *     responses:
+ *       '200':
+ *         description: Gives true or false
+ */
 router.post('/tokenIsValid', async (req, res) => {
   try {
     const token = req.header('x-auth-token');
@@ -127,6 +225,28 @@ router.post('/tokenIsValid', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Gets logged user data
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - in: "header"
+ *       name: "x-auth-token"
+ *       decription: "User token"
+ *       schema:
+ *        type: string
+ *       required: true
+ *     responses:
+ *       '200':
+ *         description: Prints out logged user object
+ */
 router.get('/user', auth, async (req, res) => {
   try {
     const getUser = await User.findById(req.user);
